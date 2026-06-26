@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="google-site-verification" content="LQ53Cx4KURFfCykNEG_jXKJ-at3662hYubUZzV0wqzE" />
   <title>VerifyFill</title>
   <link rel="icon" href="logo.png" type="image/png" />
   <style>
@@ -48,14 +47,19 @@
   </p>
 
   <p>
-    Sign in with your Google account, open a site that asks for a code or tells you
-    to check your email, and VerifyFill will offer to fill the code or open the link
-    when the message arrives.
+    When you sign in, VerifyFill checks your recent Gmail inbox for messages that
+    look like verification emails. If you are on a website waiting for a code or
+    a confirmation link, it shows a small prompt so you can fill the code or open
+    the link in one click.
   </p>
 
+  <h2>Data access</h2>
   <p>
-    Everything runs in your browser. VerifyFill only reads Gmail — it cannot send
-    or change your email.
+    VerifyFill requests read-only access to Gmail
+    (<code>gmail.readonly</code>) and your email address. This is only used to
+    find verification codes and links in recent messages. Email content is processed
+    on your device inside the extension. Nothing is sent to a VerifyFill server.
+    You can sign out or revoke access at any time.
   </p>
 
   <h2>Install</h2>
@@ -81,7 +85,7 @@
   </p>
 
   <p class="foot">
-    <a href="privacy.html">Privacy policy</a>
+    <a href="https://verifyfill.krispi.org/privacy.html">Privacy policy</a>
   </p>
 </body>
 </html>

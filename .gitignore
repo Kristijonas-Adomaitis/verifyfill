@@ -2,3 +2,4 @@
 *.pem
 .env
 credentials.json
+verifyfill.zip

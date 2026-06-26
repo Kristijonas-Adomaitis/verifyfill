@@ -15,7 +15,11 @@
     h1 { font-size: 1.75rem; margin-bottom: 1rem; }
     h2 { font-size: 1.1rem; margin-top: 2rem; }
     p, li { color: #333; }
+    ol { padding-left: 1.25rem; }
+    li { margin: 0.35rem 0; }
     a { color: #007aff; }
+    code { font-size: 0.9em; }
+    .note { font-size: 0.95rem; color: #555; }
     .foot { margin-top: 2.5rem; font-size: 0.95rem; color: #666; }
   </style>
 </head>
@@ -40,8 +44,19 @@
 
   <h2>Install</h2>
   <p>
-    VerifyFill is distributed through the Chrome Web Store.
-    <!-- Replace with your store listing URL once published -->
+  <a href="https://github.com/Kristijonas-Adomaitis/verifyfill/releases/latest">Download the latest release</a>
+  from GitHub, unzip it, then:
+  </p>
+  <ol>
+    <li>Open <code>chrome://extensions</code></li>
+    <li>Turn on <strong>Developer mode</strong></li>
+    <li>Click <strong>Load unpacked</strong></li>
+    <li>Select the unzipped <code>verifyfill</code> folder</li>
+    <li>Click the VerifyFill icon and sign in with Google</li>
+  </ol>
+  <p class="note">
+    Chrome may show a notice that developer extensions are turned on. That is normal
+    for extensions installed outside the Chrome Web Store.
   </p>
 
   <h2>Contact</h2>
@@ -52,7 +67,7 @@
   <p class="foot">
     <a href="privacy.html">Privacy policy</a>
     ·
-    <a href="https://github.com/Kristijonas-Adomaitis/verifyfill">Source</a>
+    <a href="https://github.com/Kristijonas-Adomaitis/verifyfill">GitHub</a>
   </p>
 </body>
 </html>

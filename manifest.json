@@ -3,6 +3,7 @@
   "name": "VerifyFill",
   "version": "1.0.0",
   "description": "Autofills verification codes and email links from Gmail — like Apple autofill, for Chrome.",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAunQ/je8lUq6hIvbfsAjCIy2KmC6dcIgiH5KZSJXOjbj1WScWAzQ7ITUOC3g9c0kZEeyYD+Y1lzFl5LRefRheDpdtRgUppM6AFwHjhGgI3WvEduWMd6qnwYJEXG3dakCAVKFQgsUU18FBRu8CpM/WTRmYuFSSetyD1QjfywKN2wHgMXf+rpT2Tl0aLf0eFy3bKpk0sRx6pJFtGQCS/jeQCP0nKQEG/ODUVSAyUyTHhyLEgwrG2Z1+onH5jv/ba1jSDTjbfV1dDWdh29kGJZDtsP6e3Frp74vo3QcZdfEOINmw/7Ts96nMsaDQ4qHoSavnIPWH9sX6HIhDCmotgQnBIwIDAQAB",
   "permissions": [
     "identity",
     "alarms",

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VerifyFill</title>
+  <title>VerifyFill — Chrome Extension</title>
   <link rel="icon" href="logo.png" type="image/png" />
   <style>
     body {
@@ -13,7 +13,25 @@
       font: 17px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif;
       color: #111;
     }
-    h1 { font-size: 1.75rem; margin: 0 0 1.25rem; }
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 0.5rem;
+    }
+    .header img {
+      width: 64px;
+      height: 64px;
+      flex-shrink: 0;
+    }
+    h1 { font-size: 1.75rem; margin: 0; }
+    .badge {
+      display: inline-block;
+      margin: 0 0 1rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #444;
+    }
     h2 { font-size: 1.15rem; margin: 2rem 0 0.75rem; }
     p { margin: 0 0 1rem; }
     ul { margin: 0 0 1rem; padding-left: 1.25rem; }
@@ -35,7 +53,11 @@
   </style>
 </head>
 <body>
-  <h1>VerifyFill</h1>
+  <div class="header">
+    <img src="logo.png" alt="VerifyFill logo" width="64" height="64" />
+    <h1>VerifyFill</h1>
+  </div>
+  <p class="badge">Chrome Extension</p>
   <p>VerifyFill is developed and owned by Kristijonas.</p>
 
   <h2>Purpose</h2>

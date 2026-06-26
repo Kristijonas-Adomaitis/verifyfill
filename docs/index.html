@@ -16,8 +16,14 @@
     .header {
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 14px;
       margin-bottom: 0.5rem;
+    }
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
     }
     .header img {
       width: 64px;
@@ -49,13 +55,21 @@
     .scope-box h2, .scope-box h3 { margin-top: 0; }
     .scope-box h3 { margin-top: 1.25rem; }
     .contact p { margin-bottom: 0.35rem; }
+    .policy-link {
+      font-size: 0.95rem;
+      font-weight: 500;
+      white-space: nowrap;
+    }
     .not-list { color: #333; }
   </style>
 </head>
 <body>
   <div class="header">
-    <img src="logo.png" alt="VerifyFill logo" width="64" height="64" />
-    <h1>VerifyFill</h1>
+    <div class="header-brand">
+      <img src="logo.png" alt="VerifyFill logo" width="64" height="64" />
+      <h1>VerifyFill</h1>
+    </div>
+    <a class="policy-link" href="https://verifyfill.krispi.org/privacy.html">Privacy Policy</a>
   </div>
   <p class="badge">Chrome Extension</p>
   <p>VerifyFill is developed and owned by Kristijonas.</p>

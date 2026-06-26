@@ -27,7 +27,7 @@
     h1 { font-size: 1.75rem; margin: 0; }
     h2 { font-size: 1.1rem; margin-top: 2rem; }
     p, li { color: #333; }
-    ol { padding-left: 1.25rem; }
+    ol, ul { padding-left: 1.25rem; }
     li { margin: 0.35rem 0; }
     a { color: #007aff; }
     code { font-size: 0.9em; }
@@ -41,31 +41,50 @@
     <h1>VerifyFill</h1>
   </div>
 
+  <h2>Purpose</h2>
   <p>
-    VerifyFill is a Chrome extension that autofills verification codes and email
-    verification links from Gmail.
+    The purpose of VerifyFill is to help people sign in to websites faster when a
+    site sends a verification code or email confirmation link to Gmail. Many online
+    services require a one-time code or a link clicked from email before you can
+    log in or create an account. VerifyFill reads those messages from Gmail and
+    offers to enter the code or open the link for you, so you do not have to switch
+    between Gmail and the website manually.
   </p>
 
+  <h2>What VerifyFill does</h2>
+  <p>VerifyFill is a Chrome browser extension. After you install it and sign in with Google:</p>
+  <ol>
+    <li>You visit a website that asks for a verification code or tells you to check your email.</li>
+    <li>VerifyFill looks at recent Gmail messages for codes or confirmation links related to sign-in.</li>
+    <li>When it finds a match, it shows a small prompt on the page you are using.</li>
+    <li>You click to autofill the code into the form, or open the verification link.</li>
+  </ol>
   <p>
-    When you sign in, VerifyFill checks your recent Gmail inbox for messages that
-    look like verification emails. If you are on a website waiting for a code or
-    a confirmation link, it shows a small prompt so you can fill the code or open
-    the link in one click.
+    VerifyFill does not send email, change your inbox, or access Gmail for any purpose
+    other than finding verification codes and links to help you complete sign-in flows.
   </p>
 
-  <h2>Data access</h2>
+  <h2>Why VerifyFill requests Gmail access</h2>
   <p>
-    VerifyFill requests read-only access to Gmail
-    (<code>gmail.readonly</code>) and your email address. This is only used to
-    find verification codes and links in recent messages. Email content is processed
-    on your device inside the extension. Nothing is sent to a VerifyFill server.
-    You can sign out or revoke access at any time.
+    VerifyFill needs read-only access to Gmail because verification codes and
+    confirmation links are delivered by email. The extension uses the Gmail API
+    scope <code>https://www.googleapis.com/auth/gmail.readonly</code> and your
+    Google account email address only to:
+  </p>
+  <ul>
+    <li>Read recent inbox messages that may contain a verification code or link</li>
+    <li>Show which Google account is connected in the extension</li>
+  </ul>
+  <p>
+    Email content is processed on your device inside the extension. VerifyFill does
+    not operate servers that receive your email. You can sign out in the extension
+    or revoke access in your Google Account at any time.
   </p>
 
   <h2>Install</h2>
   <p>
-  <a href="https://github.com/Kristijonas-Adomaitis/verifyfill/releases/latest">Download the latest release</a>
-  from GitHub, unzip it, then:
+    <a href="https://github.com/Kristijonas-Adomaitis/verifyfill/releases/latest">Download the latest release</a>
+    from GitHub, unzip it, then:
   </p>
   <ol>
     <li>Open <code>chrome://extensions</code></li>

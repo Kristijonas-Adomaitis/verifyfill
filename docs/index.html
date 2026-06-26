@@ -25,32 +25,57 @@
 <body>
   <h1>VerifyFill</h1>
 
+  <h2>Purpose</h2>
   <p>
-    VerifyFill lets you connect your Google account to read verification codes and
-    confirmation links from Gmail and autofill them on websites when you sign in.
+    VerifyFill exists so you can finish signing in to websites without constantly switching
+    between Gmail and the site you are on. When a service sends a verification code or a
+    confirmation link to your email, this application finds it and helps you use it on the
+    page where you are trying to log in or create an account.
   </p>
 
-  <h2>How VerifyFill uses Google data</h2>
-  <p>
-    VerifyFill uses Google Sign-In so you can connect your Gmail account. After you sign in,
-    the extension uses these permissions:
-  </p>
+  <h2>How it works</h2>
+  <p>VerifyFill is a Chrome extension. After you install it and sign in with Google:</p>
   <ul>
-    <li>
-      <code>gmail.readonly</code> — reads recent inbox messages to find verification codes
-      and email confirmation links
-    </li>
-    <li>
-      <code>userinfo.email</code> — reads your Google account email address so the extension
-      can show which account is connected
-    </li>
+    <li>You open a website that asks for a verification code or tells you to check your email.</li>
+    <li>VerifyFill checks your recent Gmail messages for a matching code or link.</li>
+    <li>If one is found, it shows a prompt on the page you are using.</li>
+    <li>You choose to fill the code into the form or open the confirmation link.</li>
   </ul>
+
+  <h2>Data we access</h2>
+  <p>VerifyFill accesses the following Google user data:</p>
+  <ul>
+    <li>Your Google account email address</li>
+    <li>Recent messages in your Gmail inbox</li>
+  </ul>
+  <p>It requests these OAuth scopes:</p>
+  <ul>
+    <li><code>https://www.googleapis.com/auth/userinfo.email</code></li>
+    <li><code>https://www.googleapis.com/auth/gmail.readonly</code></li>
+  </ul>
+
+  <h2>How we use your data</h2>
   <p>
-    This data is used only to detect codes and links and offer to fill them on the page you
-    are on. Email content is processed in your browser on your device. VerifyFill does not
-    send your email to a server, does not change your inbox, and does not use your data for
-    advertising. You can sign out in the extension or revoke access in your
-    <a href="https://myaccount.google.com/permissions">Google Account</a>.
+    Your email address is used only to show which Google account is connected in the extension.
+  </p>
+  <p>
+    Gmail messages are read only to search for verification codes and email confirmation links.
+    Message content is processed on your device inside the Chrome extension. VerifyFill does not
+    send your email to a server, does not modify or delete messages, and does not use your data
+    for advertising or profiling.
+  </p>
+
+  <h2>Why we need this data</h2>
+  <p>
+    VerifyFill cannot find verification codes or confirmation links without read access to
+    Gmail, because that is where websites send them. Read-only Gmail access is required to
+    detect those messages and offer to autofill a code or open a link on the site you are using.
+    Your email address is required so you can sign in with Google and so the extension can
+    show which account is connected. No other Google data is accessed.
+  </p>
+  <p>
+    You can sign out in the extension or revoke access at any time in your
+    <a href="https://myaccount.google.com/permissions">Google Account permissions</a>.
   </p>
 
   <p>

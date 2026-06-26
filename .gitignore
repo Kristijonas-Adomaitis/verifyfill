@@ -3,6 +3,7 @@
 .env
 credentials.json
 verifyfill.zip
+node_modules/
 
 manifest.json
 background.js

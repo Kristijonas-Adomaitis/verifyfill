@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VerifyFill</title>
+  <title>VerifyFill — Gmail verification autofill for Chrome</title>
+  <meta name="description" content="VerifyFill is a Chrome extension that uses read-only Gmail access to autofill verification codes and email confirmation links when you sign in to websites." />
   <link rel="icon" href="logo.png" type="image/png" />
   <style>
     body {
@@ -13,89 +14,100 @@
       font: 16px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif;
       color: #1f1f1f;
     }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 1.25rem;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #e5e5ea;
+    }
     .brand {
       display: flex;
       align-items: center;
-      gap: 14px;
-      margin-bottom: 1rem;
+      gap: 12px;
     }
     .brand img {
-      width: 56px;
-      height: 56px;
+      width: 48px;
+      height: 48px;
       flex-shrink: 0;
     }
-    h1 { font-size: 1.75rem; margin: 0; }
-    h2 { font-size: 1.1rem; margin-top: 2rem; }
+    h1 { font-size: 1.5rem; margin: 0; }
+    h2 { font-size: 1.1rem; margin-top: 1.75rem; }
     p, li { color: #333; }
     ol, ul { padding-left: 1.25rem; }
     li { margin: 0.35rem 0; }
     a { color: #007aff; }
     code { font-size: 0.9em; }
+    .lead {
+      font-size: 1.05rem;
+      margin-top: 0;
+    }
     .note { font-size: 0.95rem; color: #555; }
-    .foot { margin-top: 2.5rem; font-size: 0.95rem; color: #666; }
+    .policy-link {
+      font-size: 0.95rem;
+      font-weight: 500;
+      white-space: nowrap;
+    }
   </style>
 </head>
 <body>
-  <div class="brand">
-    <img src="logo.png" alt="" width="56" height="56" />
-    <h1>VerifyFill</h1>
+  <div class="topbar">
+    <div class="brand">
+      <img src="logo.png" alt="VerifyFill logo" width="48" height="48" />
+      <h1>VerifyFill</h1>
+    </div>
+    <a class="policy-link" href="https://verifyfill.krispi.org/privacy.html">Privacy Policy</a>
   </div>
 
-  <h2>Purpose</h2>
-  <p>
-    The purpose of VerifyFill is to help people sign in to websites faster when a
-    site sends a verification code or email confirmation link to Gmail. Many online
-    services require a one-time code or a link clicked from email before you can
-    log in or create an account. VerifyFill reads those messages from Gmail and
-    offers to enter the code or open the link for you, so you do not have to switch
-    between Gmail and the website manually.
+  <p class="lead">
+    <strong>VerifyFill is a Chrome extension that helps you complete website sign-in when a
+    verification code or email confirmation link is sent to Gmail.</strong> The application
+    connects to your Google account with your permission, reads recent Gmail messages to find
+    verification codes or links, and offers to autofill them on the website you are using.
   </p>
 
-  <h2>What VerifyFill does</h2>
-  <p>VerifyFill is a Chrome browser extension. After you install it and sign in with Google:</p>
-  <ol>
-    <li>You visit a website that asks for a verification code or tells you to check your email.</li>
-    <li>VerifyFill looks at recent Gmail messages for codes or confirmation links related to sign-in.</li>
-    <li>When it finds a match, it shows a small prompt on the page you are using.</li>
-    <li>You click to autofill the code into the form, or open the verification link.</li>
-  </ol>
+  <h2>Application purpose</h2>
   <p>
-    VerifyFill does not send email, change your inbox, or access Gmail for any purpose
-    other than finding verification codes and links to help you complete sign-in flows.
+    The purpose of this application is to reduce manual copying between Gmail and websites
+    during login, account creation, and two-step verification. When a website asks for a
+    one-time code or tells you to click a link in your email, VerifyFill finds that message
+    in Gmail and helps you apply it on the current page.
   </p>
 
-  <h2>Why VerifyFill requests Gmail access</h2>
+  <h2>Application functionality</h2>
+  <p>VerifyFill provides the following features to users:</p>
+  <ul>
+    <li>Sign in with Google to connect a Gmail account</li>
+    <li>Scan recent inbox messages for verification codes (for example, 6-digit OTP codes)</li>
+    <li>Scan recent inbox messages for email verification and sign-in links</li>
+    <li>Display a prompt on the active browser tab to fill a code or open a link</li>
+    <li>Let the user autofill a code into a form or open a verification link in one click</li>
+  </ul>
+
+  <h2>How this app uses Google user data</h2>
   <p>
-    VerifyFill needs read-only access to Gmail because verification codes and
-    confirmation links are delivered by email. The extension uses the Gmail API
-    scope <code>https://www.googleapis.com/auth/gmail.readonly</code> and your
-    Google account email address only to:
+    VerifyFill uses Google Sign-In and the Gmail API only for the features listed above.
+    This application requests the following Google OAuth scopes:
   </p>
   <ul>
-    <li>Read recent inbox messages that may contain a verification code or link</li>
-    <li>Show which Google account is connected in the extension</li>
+    <li><code>https://www.googleapis.com/auth/gmail.readonly</code> — to read recent Gmail messages and detect verification codes or confirmation links</li>
+    <li><code>https://www.googleapis.com/auth/userinfo.email</code> — to show which Google account is connected</li>
   </ul>
   <p>
-    Email content is processed on your device inside the extension. VerifyFill does
-    not operate servers that receive your email. You can sign out in the extension
-    or revoke access in your Google Account at any time.
+    Google user data is used only to provide verification autofill. Email content is processed
+    locally in the user’s browser inside the Chrome extension. VerifyFill does not sell Google
+    user data, does not use it for advertising, and does not upload inbox content to a
+    VerifyFill server. Users can sign out in the extension or revoke access in their
+    <a href="https://myaccount.google.com/permissions">Google Account permissions</a> at any time.
   </p>
 
   <h2>Install</h2>
   <p>
-    <a href="https://github.com/Kristijonas-Adomaitis/verifyfill/releases/latest">Download the latest release</a>
-    from GitHub, unzip it, then:
-  </p>
-  <ol>
-    <li>Open <code>chrome://extensions</code></li>
-    <li>Turn on <strong>Developer mode</strong></li>
-    <li>Click <strong>Load unpacked</strong></li>
-    <li>Select the unzipped <code>verifyfill</code> folder</li>
-    <li>Click the VerifyFill icon and sign in with Google</li>
-  </ol>
-  <p class="note">
-    Chrome may show a notice that developer extensions are turned on. That is normal
-    for extensions installed outside the Chrome Web Store.
+    <a href="https://github.com/Kristijonas-Adomaitis/verifyfill/releases/latest">Download the latest release</a>,
+    unzip it, open <code>chrome://extensions</code>, enable Developer mode, click Load unpacked,
+    and select the extension folder.
   </p>
 
   <h2>Contact</h2>
@@ -103,8 +115,8 @@
     <a href="mailto:kristijonasvr@gmail.com">kristijonasvr@gmail.com</a>
   </p>
 
-  <p class="foot">
-    <a href="https://verifyfill.krispi.org/privacy.html">Privacy policy</a>
+  <p>
+    <a href="https://verifyfill.krispi.org/privacy.html">Privacy Policy</a>
   </p>
 </body>
 </html>

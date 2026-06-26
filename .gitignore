@@ -3,3 +3,15 @@
 .env
 credentials.json
 verifyfill.zip
+
+manifest.json
+background.js
+content.js
+otp-parser.js
+link-parser.js
+overlay.css
+popup.html
+popup.js
+popup.css
+icons/
+scripts/

@@ -20,6 +20,18 @@
     li { margin: 0.4rem 0; }
     a { color: #0066cc; }
     code { font-size: 0.88em; }
+    .scope-box {
+      margin: 1.25rem 0 1.5rem;
+      padding: 1rem 1.1rem;
+      border: 1px solid #b8d4f0;
+      border-radius: 8px;
+      background: #f4f8fc;
+    }
+    .scope-box h2 {
+      margin: 0 0 0.75rem;
+      font-size: 1.1rem;
+    }
+    .contact p { margin-bottom: 0.35rem; }
   </style>
 </head>
 <body>
@@ -34,25 +46,45 @@
     page where you are trying to log in or create an account.
   </p>
 
+  <div class="scope-box">
+    <h2>Gmail access (gmail.readonly)</h2>
+    <p>
+      VerifyFill requests read-only access to Gmail through the OAuth scope
+      <code>https://www.googleapis.com/auth/gmail.readonly</code>.
+      This permission is used only to search your inbox for verification codes and email
+      confirmation links. VerifyFill cannot send, delete, or modify your email.
+    </p>
+    <p>Specifically, the extension:</p>
+    <ul>
+      <li>Reads up to the 20 most recent inbox messages received in the last 15 minutes</li>
+      <li>Reads each message’s subject line and body text</li>
+      <li>Looks only for verification codes and sign-in or confirmation links</li>
+      <li>Ignores messages that do not appear related to verification</li>
+    </ul>
+  </div>
+
   <h2>How it works</h2>
   <p>VerifyFill is a Chrome extension. After you install it and sign in with Google:</p>
   <ul>
     <li>You open a website that asks for a verification code or tells you to check your email.</li>
-    <li>VerifyFill checks your recent Gmail messages for a matching code or link.</li>
-    <li>If one is found, it shows a prompt on the page you are using.</li>
+    <li>VerifyFill searches your inbox using the Gmail access described above.</li>
+    <li>If a matching code or link is found, it shows a prompt on the page you are using.</li>
     <li>You choose to fill the code into the form or open the confirmation link.</li>
   </ul>
 
   <h2>Data we access</h2>
   <p>VerifyFill accesses the following Google user data:</p>
   <ul>
-    <li>Your Google account email address</li>
-    <li>Recent messages in your Gmail inbox</li>
-  </ul>
-  <p>It requests these OAuth scopes:</p>
-  <ul>
-    <li><code>https://www.googleapis.com/auth/userinfo.email</code></li>
-    <li><code>https://www.googleapis.com/auth/gmail.readonly</code></li>
+    <li>
+      <strong>Google account email address</strong> — via
+      <code>https://www.googleapis.com/auth/userinfo.email</code>
+    </li>
+    <li>
+      <strong>Gmail inbox messages</strong> — via
+      <code>https://www.googleapis.com/auth/gmail.readonly</code>: up to 20 inbox messages
+      from the last 15 minutes; subject and body are read to detect verification codes and
+      confirmation links only
+    </li>
   </ul>
 
   <h2>How we use your data</h2>
@@ -60,17 +92,18 @@
     Your email address is used only to show which Google account is connected in the extension.
   </p>
   <p>
-    Gmail messages are read only to search for verification codes and email confirmation links.
-    Message content is processed on your device inside the Chrome extension. VerifyFill does not
-    send your email to a server, does not modify or delete messages, and does not use your data
-    for advertising or profiling.
+    Gmail message subject lines and bodies are read only to search for verification codes and
+    email confirmation links. That content is processed on your device inside the Chrome
+    extension. VerifyFill does not send your email to a server, does not modify or delete
+    messages, and does not use your data for advertising or profiling.
   </p>
 
   <h2>Why we need this data</h2>
   <p>
     VerifyFill cannot find verification codes or confirmation links without read access to
-    Gmail, because that is where websites send them. Read-only Gmail access is required to
-    detect those messages and offer to autofill a code or open a link on the site you are using.
+    Gmail, because that is where websites send them. The
+    <code>gmail.readonly</code> scope is required to read inbox message subjects and bodies
+    from the last 15 minutes and detect codes or links to offer on the site you are using.
     Your email address is required so you can sign in with Google and so the extension can
     show which account is connected. No other Google data is accessed.
   </p>
@@ -79,10 +112,12 @@
     <a href="https://myaccount.google.com/permissions">Google Account permissions</a>.
   </p>
 
-  <p>
-    <a href="https://verifyfill.krispi.org/privacy.html">Privacy Policy</a>
-    ·
-    <a href="mailto:kristijonasvr@gmail.com">kristijonasvr@gmail.com</a>
-  </p>
+  <h2>Contact</h2>
+  <div class="contact">
+    <p><strong>Owner:</strong> Kristijonas</p>
+    <p><strong>Email:</strong> <a href="mailto:kristijonasvr@gmail.com">kristijonasvr@gmail.com</a></p>
+    <p><strong>Website:</strong> <a href="https://verifyfill.krispi.org/">https://verifyfill.krispi.org/</a></p>
+    <p><strong>Privacy policy:</strong> <a href="https://verifyfill.krispi.org/privacy.html">https://verifyfill.krispi.org/privacy.html</a></p>
+  </div>
 </body>
 </html>

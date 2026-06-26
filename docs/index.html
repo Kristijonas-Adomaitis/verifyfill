@@ -3,244 +3,639 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VerifyFill — Chrome Extension</title>
+  <title>VerifyFill — Gmail verification autofill for Chrome</title>
+  <meta name="description" content="VerifyFill is a Chrome extension that autofills verification codes and email links from Gmail." />
   <link rel="icon" href="logo.png" type="image/png" />
   <style>
-    body {
-      max-width: 680px;
-      margin: 48px auto;
-      padding: 0 20px 48px;
-      font: 17px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif;
-      color: #111;
+    :root {
+      --blue: #2263eb;
+      --blue-dark: #1a4fc4;
+      --blue-glow: rgba(34, 99, 235, 0.35);
+      --bg: #070b14;
+      --bg-card: rgba(255, 255, 255, 0.04);
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #eef2ff;
+      --muted: #94a3b8;
+      --white-section: #f8fafc;
+      --text-dark: #0f172a;
+      --muted-dark: #475569;
     }
-    .header {
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font: 16px/1.6 "Segoe UI", system-ui, -apple-system, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      overflow-x: hidden;
+    }
+
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 14px;
-      margin-bottom: 0.5rem;
+      padding: 14px 24px;
+      background: rgba(7, 11, 20, 0.75);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      animation: nav-in 0.6s ease-out;
     }
-    .header-brand {
+
+    @keyframes nav-in {
+      from { opacity: 0; transform: translateY(-12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .nav-brand {
       display: flex;
       align-items: center;
-      gap: 14px;
-    }
-    .header img {
-      width: 64px;
-      height: 64px;
-      flex-shrink: 0;
-    }
-    h1 { font-size: 1.75rem; margin: 0; }
-    h2 { font-size: 1.2rem; margin: 2.25rem 0 0.75rem; }
-    h3 { font-size: 1.05rem; margin: 1.5rem 0 0.5rem; }
-    .badge {
-      display: inline-block;
-      margin: 0 0 1rem;
-      font-size: 0.9rem;
+      gap: 10px;
+      color: var(--text);
       font-weight: 600;
-      color: #444;
+      font-size: 1.05rem;
     }
-    p { margin: 0 0 1rem; }
-    ul { margin: 0 0 1rem; padding-left: 1.25rem; }
-    li { margin: 0.4rem 0; }
-    a { color: #0066cc; }
-    code { font-size: 0.88em; }
-    .scope-box {
-      margin: 1.25rem 0 1.5rem;
-      padding: 1rem 1.1rem;
-      border: 1px solid #b8d4f0;
-      border-radius: 8px;
-      background: #f4f8fc;
-    }
-    .scope-box h2, .scope-box h3 { margin-top: 0; }
-    .scope-box h3 { margin-top: 1.25rem; }
-    .contact p { margin-bottom: 0.35rem; }
-    .policy-link {
-      font-size: 0.95rem;
-      font-weight: 500;
-      white-space: nowrap;
-    }
-    .not-list { color: #333; }
-    .demo {
-      margin: 1.5rem 0 2rem;
-    }
-    .demo img {
-      display: block;
-      max-width: 320px;
-      width: 100%;
-      border: 1px solid #e5e5ea;
-      border-radius: 8px;
-    }
-    .demo figcaption {
-      margin-top: 0.5rem;
+
+    .nav-brand img { width: 36px; height: 36px; }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 20px;
       font-size: 0.9rem;
-      color: #666;
+    }
+
+    .nav-links a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--text); text-decoration: none; }
+
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 120px 24px 80px;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(34, 99, 235, 0.25), transparent),
+        radial-gradient(ellipse 50% 40% at 80% 60%, rgba(99, 102, 241, 0.15), transparent),
+        radial-gradient(ellipse 40% 30% at 10% 80%, rgba(14, 165, 233, 0.1), transparent);
+      animation: hero-shift 12s ease-in-out infinite alternate;
+    }
+
+    @keyframes hero-shift {
+      0% { transform: scale(1) translateY(0); }
+      100% { transform: scale(1.05) translateY(-2%); }
+    }
+
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black, transparent);
+    }
+
+    .hero-inner {
+      position: relative;
+      max-width: 1100px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+
+    .hero-copy { animation: fade-up 0.8s ease-out 0.1s both; }
+
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(28px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-badge {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.2rem, 5vw, 3.4rem);
+      line-height: 1.1;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(135deg, #60a5fa, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-lead {
+      font-size: 1.1rem;
+      color: var(--muted);
+      max-width: 480px;
+      margin-bottom: 32px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+    }
+
+    .btn:hover { text-decoration: none; transform: translateY(-2px); }
+
+    .btn-primary {
+      background: var(--blue);
+      color: #fff;
+      box-shadow: 0 4px 24px var(--blue-glow);
+      animation: pulse-glow 3s ease-in-out infinite;
+    }
+
+    .btn-primary:hover { background: var(--blue-dark); }
+
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 4px 24px var(--blue-glow); }
+      50% { box-shadow: 0 4px 40px rgba(34, 99, 235, 0.55); }
+    }
+
+    .btn-ghost {
+      border: 1px solid var(--border);
+      color: var(--text);
+      background: var(--bg-card);
+    }
+
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.2); }
+
+    .hero-visual {
+      display: flex;
+      justify-content: center;
+      animation: fade-up 0.8s ease-out 0.3s both;
+    }
+
+    .demo-frame {
+      position: relative;
+      padding: 12px;
+      border-radius: 16px;
+      background: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(255,255,255,0.02));
+      border: 1px solid var(--border);
+      box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+      animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .demo-frame::before {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      border-radius: 17px;
+      background: linear-gradient(135deg, rgba(96,165,250,0.4), transparent, rgba(167,139,250,0.3));
+      z-index: -1;
+      opacity: 0.6;
+    }
+
+    .demo-frame img {
+      display: block;
+      width: 100%;
+      max-width: 340px;
+      border-radius: 10px;
+    }
+
+    .section {
+      padding: 96px 24px;
+    }
+
+    .section-light {
+      background: var(--white-section);
+      color: var(--text-dark);
+    }
+
+    .section-light a { color: var(--blue); }
+    .section-light .muted { color: var(--muted-dark); }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 12px;
+    }
+
+    .section-light .section-label { color: var(--blue-dark); }
+
+    .section-title {
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+
+    .section-intro {
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 640px;
+      margin-bottom: 48px;
+    }
+
+    .section-light .section-intro { color: var(--muted-dark); }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      counter-reset: step;
+    }
+
+    .step {
+      position: relative;
+      padding: 24px 20px;
+      border-radius: 14px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      transition: transform 0.25s, border-color 0.25s;
+    }
+
+    .section-light .step {
+      background: #fff;
+      border-color: #e2e8f0;
+      box-shadow: 0 4px 20px rgba(15,23,42,0.06);
+    }
+
+    .step:hover { transform: translateY(-4px); border-color: rgba(34,99,235,0.3); }
+
+    .step-num {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--blue);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.85rem;
+      margin-bottom: 14px;
+    }
+
+    .step h3 { font-size: 0.95rem; margin-bottom: 8px; }
+    .step p { font-size: 0.88rem; color: var(--muted); line-height: 1.5; }
+    .section-light .step p { color: var(--muted-dark); }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .feature {
+      padding: 22px;
+      border-radius: 14px;
+      border: 1px solid #e2e8f0;
+      background: #fff;
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+
+    .feature:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 32px rgba(15,23,42,0.08);
+    }
+
+    .feature h3 {
+      font-size: 0.95rem;
+      margin-bottom: 6px;
+      color: var(--text-dark);
+    }
+
+    .feature p {
+      font-size: 0.88rem;
+      color: var(--muted-dark);
+      line-height: 1.5;
+    }
+
+    .transparency {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .t-card {
+      padding: 28px;
+      border-radius: 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+    }
+
+    .t-card h3 {
+      font-size: 1.05rem;
+      margin-bottom: 12px;
+      color: #93c5fd;
+    }
+
+    .t-card p, .t-card li {
+      font-size: 0.92rem;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .t-card ul { padding-left: 1.2rem; }
+    .t-card li { margin-bottom: 6px; }
+    .t-card strong { color: var(--text); }
+    .t-card code {
+      font-size: 0.82em;
+      background: rgba(255,255,255,0.06);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #bfdbfe;
+    }
+
+    .t-highlight {
+      border-color: rgba(34,99,235,0.35);
+      background: linear-gradient(135deg, rgba(34,99,235,0.12), rgba(34,99,235,0.04));
+    }
+
+    .footer {
+      padding: 48px 24px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .footer p { color: var(--muted); font-size: 0.9rem; margin-bottom: 6px; }
+    .footer a { color: #93c5fd; }
+
+    @media (max-width: 800px) {
+      .hero-inner { grid-template-columns: 1fr; text-align: center; }
+      .hero-lead { margin-left: auto; margin-right: auto; }
+      .hero-actions { justify-content: center; }
+      .steps { grid-template-columns: 1fr 1fr; }
+      .nav-links { display: none; }
+    }
+
+    @media (max-width: 500px) {
+      .steps { grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      .reveal { opacity: 1; transform: none; }
     }
   </style>
 </head>
 <body>
-  <div class="header">
-    <div class="header-brand">
-      <img src="logo.png" alt="VerifyFill logo" width="64" height="64" />
-      <h1>VerifyFill</h1>
+  <nav class="nav">
+    <a class="nav-brand" href="#">
+      <img src="logo.png" alt="" width="36" height="36" />
+      VerifyFill
+    </a>
+    <div class="nav-links">
+      <a href="#purpose">Purpose</a>
+      <a href="#features">Features</a>
+      <a href="#how">How it works</a>
+      <a href="#data">Data &amp; privacy</a>
+      <a href="https://verifyfill.krispi.org/privacy.html">Privacy Policy</a>
     </div>
-    <a class="policy-link" href="https://verifyfill.krispi.org/privacy.html">Privacy Policy</a>
-  </div>
-  <p class="badge">Chrome Extension</p>
-  <p>VerifyFill is developed and owned by Kristijonas.</p>
+  </nav>
 
-  <h2>Purpose</h2>
-  <p>
-    VerifyFill exists so you can finish signing in to websites without constantly switching
-    between Gmail and the site you are on. When a service sends a verification code or a
-    confirmation link to your email, this application finds it and helps you use it on the
-    page where you are trying to log in or create an account.
-  </p>
+  <header class="hero">
+    <div class="hero-bg" aria-hidden="true"></div>
+    <div class="hero-grid" aria-hidden="true"></div>
+    <div class="hero-inner">
+      <div class="hero-copy">
+        <span class="hero-badge">Chrome Extension</span>
+        <h1>Verification codes from Gmail, <span>filled instantly</span></h1>
+        <p class="hero-lead">
+          VerifyFill reads verification codes and confirmation links from your Gmail inbox
+          and offers to autofill them on the website you are signing in to — no more tab switching.
+        </p>
+        <p class="hero-lead" style="font-size: 0.9rem; margin-top: -16px;">
+          Developed and owned by Kristijonas.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="https://github.com/Kristijonas-Adomaitis/verifyfill/releases/latest">Download for Chrome</a>
+          <a class="btn btn-ghost" href="https://verifyfill.krispi.org/privacy.html">Privacy Policy</a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <figure class="demo-frame">
+          <img src="demo-popup.png" alt="VerifyFill extension popup showing Connected status and Check now" width="340" height="179" />
+        </figure>
+      </div>
+    </div>
+  </header>
 
-  <h2>Demonstration</h2>
-  <p>
-    After you install VerifyFill and sign in with Google, the extension popup shows which
-    account is connected and lets you check Gmail for new verification codes or links:
-  </p>
-  <figure class="demo">
-    <img src="demo-popup.png" alt="VerifyFill extension popup showing Connected status, connected Gmail account, Check now button, and Sign out" width="320" height="169" />
-    <figcaption>The VerifyFill extension popup when signed in.</figcaption>
-  </figure>
+  <section class="section section-light" id="purpose">
+    <div class="container reveal">
+      <p class="section-label">Purpose</p>
+      <h2 class="section-title">Finish signing in without leaving the page</h2>
+      <p class="section-intro">
+        VerifyFill exists so you can complete website sign-in, account creation, and two-step
+        verification without constantly switching between Gmail and the site you are on. When a
+        service sends a verification code or confirmation link to your email, this application
+        finds it and helps you use it on the page where you are trying to log in or create an account.
+      </p>
+    </div>
+  </section>
 
-  <h2>Functionality</h2>
-  <p>VerifyFill is a Chrome extension with the following features:</p>
-  <ul>
-    <li><strong>Google Sign-In</strong> — connect your Gmail account through the extension popup</li>
-    <li><strong>Verification code detection</strong> — finds numeric and alphanumeric OTP codes in recent inbox messages (for example, 4–8 digit codes)</li>
-    <li><strong>Verification link detection</strong> — finds email confirmation and sign-in links in recent inbox messages</li>
-    <li><strong>Autofill prompt</strong> — shows a small on-page prompt near the input you are using when a code or link is found</li>
-    <li><strong>One-click code fill</strong> — inserts a detected code into the focused input field, including multi-box OTP forms (separate single-character fields)</li>
-    <li><strong>One-click link open</strong> — opens a detected verification link when you choose to do so</li>
-    <li><strong>Automatic watching</strong> — starts looking for a matching email when you focus a verification input or land on a “check your email” page</li>
-    <li><strong>Background inbox checks</strong> — periodically checks Gmail while signed in so new codes and links can be found without manual action</li>
-    <li><strong>Manual check</strong> — “Check now” in the extension popup scans your inbox immediately</li>
-    <li><strong>Used-item memory</strong> — does not prompt again for codes, links, or messages you have already used</li>
-    <li><strong>Sign out</strong> — disconnect your Google account and clear stored verification history from the extension</li>
-  </ul>
-  <p>
-    VerifyFill does not send email, delete email, read your full mailbox, or operate any
-    server that receives your inbox content.
-  </p>
+  <section class="section" id="how">
+    <div class="container reveal">
+      <p class="section-label">How it works</p>
+      <h2 class="section-title">Four steps to autofill</h2>
+      <p class="section-intro">Install VerifyFill, sign in with Google, and let it handle the rest.</p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <h3>Install &amp; sign in</h3>
+          <p>Load the extension in Chrome and connect your Gmail account via Google Sign-In.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <h3>Visit a sign-in page</h3>
+          <p>Open a site that asks for a verification code or tells you to check your email.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <h3>VerifyFill watches Gmail</h3>
+          <p>The extension searches your recent inbox for a matching code or confirmation link.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <h3>One click to fill</h3>
+          <p>A prompt appears on the page — click to autofill the code or open the link.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  <h2>How it works</h2>
-  <p>VerifyFill is a Chrome extension. After you install it and sign in with Google:</p>
-  <ul>
-    <li>You open a website that asks for a verification code or tells you to check your email.</li>
-    <li>VerifyFill searches your inbox using the Gmail access described below.</li>
-    <li>If a matching code or link is found, it shows a prompt on the page you are using.</li>
-    <li>You choose to fill the code into the form or open the confirmation link.</li>
-  </ul>
+  <section class="section section-light" id="features">
+    <div class="container reveal">
+      <p class="section-label">Functionality</p>
+      <h2 class="section-title">Everything VerifyFill does</h2>
+      <p class="section-intro">
+        VerifyFill does not send email, delete email, read your full mailbox, or operate any
+        server that receives your inbox content.
+      </p>
+      <div class="features">
+        <div class="feature"><h3>Google Sign-In</h3><p>Connect your Gmail account through the extension popup.</p></div>
+        <div class="feature"><h3>Code detection</h3><p>Finds numeric and alphanumeric OTP codes in recent inbox messages.</p></div>
+        <div class="feature"><h3>Link detection</h3><p>Finds email confirmation and sign-in links in recent messages.</p></div>
+        <div class="feature"><h3>Autofill prompt</h3><p>Shows an on-page prompt near your input when a match is found.</p></div>
+        <div class="feature"><h3>One-click fill</h3><p>Inserts codes into focused fields, including multi-box OTP forms.</p></div>
+        <div class="feature"><h3>One-click open</h3><p>Opens detected verification links when you choose.</p></div>
+        <div class="feature"><h3>Auto watch</h3><p>Starts watching when you focus a code field or land on a verify-email page.</p></div>
+        <div class="feature"><h3>Background checks</h3><p>Periodically checks Gmail while signed in for new codes and links.</p></div>
+        <div class="feature"><h3>Check now</h3><p>Manual inbox scan from the extension popup at any time.</p></div>
+        <div class="feature"><h3>Used-item memory</h3><p>Does not re-prompt for codes, links, or messages you already used.</p></div>
+        <div class="feature"><h3>Sign out</h3><p>Disconnect Google and clear stored verification history.</p></div>
+      </div>
+    </div>
+  </section>
 
-  <div class="scope-box">
-    <h2>Why VerifyFill requests your data — full transparency</h2>
-    <p>
-      VerifyFill only works if it can (1) know which Google account you connected,
-      (2) read recent Gmail messages that may contain a verification code or link, and
-      (3) interact with the browser tab where you are trying to sign in. This section
-      explains every type of user data the extension requests, the exact purpose of each
-      request, what is read, what is stored, what is not collected, and what you can
-      do to stop access.
-    </p>
+  <section class="section" id="data">
+    <div class="container reveal">
+      <p class="section-label">Transparency</p>
+      <h2 class="section-title">Why VerifyFill requests your data</h2>
+      <p class="section-intro">
+        VerifyFill only works if it can know which Google account you connected, read recent
+        Gmail messages that may contain a verification code or link, and interact with the
+        browser tab where you are signing in. Below is a complete breakdown of every data
+        request, why it is needed, and what we do not collect.
+      </p>
 
-    <h3>1. Google account email address</h3>
-    <p><strong>OAuth scope:</strong> <code>https://www.googleapis.com/auth/userinfo.email</code></p>
-    <p><strong>Why we request it:</strong> You sign in with Google to connect your Gmail account to the extension. We need your Google account email address so the extension can confirm sign-in succeeded and show you which account is currently connected in the extension popup.</p>
-    <p><strong>What we read:</strong> Your Google account email address only (for example, <code>you@example.com</code>).</p>
-    <p><strong>What we do with it:</strong> Display it in the extension popup so you know which Gmail account VerifyFill is using. It is stored locally on your device while you remain signed in.</p>
-    <p><strong>What we do not do with it:</strong> We do not sell it, share it with advertisers, use it for marketing, or send it to a VerifyFill server. We do not use it to access any Google product other than signing you in and labeling the connected account.</p>
+      <div class="transparency">
+        <div class="t-card">
+          <h3>1. Google account email address</h3>
+          <p><strong>OAuth scope:</strong> <code>https://www.googleapis.com/auth/userinfo.email</code></p>
+          <p><strong>Why we request it:</strong> You sign in with Google to connect Gmail. We need your email address to confirm sign-in and show which account is connected in the popup.</p>
+          <p><strong>What we read:</strong> Your Google account email address only.</p>
+          <p><strong>What we do with it:</strong> Display it in the extension popup. Stored locally while signed in.</p>
+          <p><strong>What we do not do:</strong> Sell it, share with advertisers, or send it to a VerifyFill server.</p>
+        </div>
 
-    <h3>2. Gmail inbox messages (read-only)</h3>
-    <p><strong>OAuth scope:</strong> <code>https://www.googleapis.com/auth/gmail.readonly</code></p>
-    <p><strong>Why we request it:</strong> Websites send verification codes and email confirmation links to Gmail. Without read access to your inbox, VerifyFill cannot detect those codes or links and cannot offer to autofill them. This is the core purpose of the application. Read-only access means the extension can read mail but cannot send, delete, label, or modify any message.</p>
-    <p><strong>What we read:</strong> Only when you are signed in, VerifyFill queries your Gmail inbox for messages that match all of the following limits:</p>
-    <ul>
-      <li>Messages in your <strong>inbox</strong> only (not sent mail, drafts, spam, or trash)</li>
-      <li>Messages received in the <strong>last 15 minutes</strong></li>
-      <li>Up to the <strong>20 most recent</strong> messages matching that time window</li>
-      <li>For each message: the <strong>subject line</strong>, <strong>body text</strong> (plain text or HTML converted to text), <strong>sender</strong>, and <strong>message ID</strong></li>
-    </ul>
-    <p><strong>How we use what we read:</strong> The extension scans subject and body text only to detect patterns that look like verification codes (for example, 6-digit OTP codes) or email confirmation / sign-in links. If a likely match is found, VerifyFill shows a prompt on the website tab you are using so you can fill the code or open the link. Message content is processed in your browser on your device.</p>
-    <p><strong>When we read Gmail:</strong></p>
-    <ul>
-      <li>After you sign in</li>
-      <li>Approximately every <strong>1 minute</strong> while the extension is signed in and active</li>
-      <li>When you click <strong>Check now</strong> in the extension popup</li>
-      <li>When you focus a verification input on a website or land on a “check your email” page (the extension begins watching for a matching message)</li>
-    </ul>
-    <p><strong>What we store locally from Gmail:</strong></p>
-    <ul>
-      <li>The most recently detected verification code or link (until you use it or dismiss the prompt)</li>
-      <li>IDs of Gmail messages, codes, and links you have already used (so VerifyFill does not prompt you again for the same item)</li>
-    </ul>
-    <p><strong>What we do not do with Gmail data:</strong></p>
-    <ul class="not-list">
-      <li>We do not upload your email content to a VerifyFill server — there is no VerifyFill backend that receives mail</li>
-      <li>We do not read your entire mailbox — only the limited inbox window described above</li>
-      <li>We do not use Gmail data for advertising, profiling, analytics, or resale</li>
-      <li>We do not send, delete, move, or edit any email</li>
-      <li>We do not access Gmail when you are signed out</li>
-    </ul>
+        <div class="t-card t-highlight">
+          <h3>2. Gmail inbox messages (read-only)</h3>
+          <p><strong>OAuth scope:</strong> <code>https://www.googleapis.com/auth/gmail.readonly</code></p>
+          <p><strong>Why we request it:</strong> Websites send verification codes and links to Gmail. Without read access, VerifyFill cannot detect them. Read-only means we cannot send, delete, or modify email.</p>
+          <p><strong>What we read:</strong></p>
+          <ul>
+            <li>Inbox messages only — not sent, drafts, spam, or trash</li>
+            <li>Received in the <strong>last 15 minutes</strong></li>
+            <li>Up to <strong>20 most recent</strong> messages in that window</li>
+            <li>Subject line, body text, sender, and message ID per message</li>
+          </ul>
+          <p><strong>When we read Gmail:</strong> After sign-in; every ~1 minute while active; on Check now; when you focus a verification input or land on a check-your-email page.</p>
+          <p><strong>What we do not do:</strong> Upload email to a server, read your full mailbox, use data for ads, or access Gmail when signed out.</p>
+        </div>
 
-    <h3>3. The website page you are using (browser tab)</h3>
-    <p><strong>Not a Google OAuth scope.</strong> This is access through normal Chrome extension permissions on the active browser tab.</p>
-    <p><strong>Why we need it:</strong> VerifyFill must know when you are on a page that is asking for a verification code or telling you to check your email, so it can show a fill prompt near the correct input and autofill the code if you choose. Without access to the page you are on, the extension could read Gmail but could not help you on the website.</p>
-    <p><strong>What we access on the page:</strong></p>
-    <ul>
-      <li>Whether you have focused an input field that looks like a verification code field</li>
-      <li>The page content needed to show a small fill prompt and insert a code into the focused field, or open a verification link when you click the prompt</li>
-    </ul>
-    <p><strong>What we do not do on web pages:</strong> We do not track your general browsing history, do not collect page content for advertising, and do not send page content to a VerifyFill server. Page interaction happens locally in the extension.</p>
+        <div class="t-card">
+          <h3>3. The website page you are using</h3>
+          <p><strong>Not a Google OAuth scope</strong> — Chrome extension tab permission.</p>
+          <p><strong>Why we need it:</strong> To show a fill prompt near your input and autofill the code on the page you are using.</p>
+          <p><strong>What we do not do:</strong> Track browsing history, collect pages for advertising, or send page content to a server.</p>
+        </div>
 
-    <h3>4. Local storage on your device</h3>
-    <p><strong>Why we store data locally:</strong> So you stay signed in between browser sessions and so VerifyFill does not repeatedly prompt you for codes or links you already used.</p>
-    <p><strong>What may be stored in Chrome extension storage on your computer:</strong></p>
-    <ul>
-      <li>Whether you are signed in</li>
-      <li>Your connected Google account email address</li>
-      <li>OAuth tokens managed by Chrome’s identity system (not by a VerifyFill server)</li>
-      <li>IDs of Gmail messages, verification codes, and links you have already used</li>
-    </ul>
-    <p><strong>What we do not store:</strong> A copy of your full inbox. Only the limited items above.</p>
+        <div class="t-card">
+          <h3>4. Local storage on your device</h3>
+          <p>Sign-in state, connected email, OAuth tokens (via Chrome), and IDs of used messages/codes/links. Not a copy of your inbox.</p>
+        </div>
 
-    <h3>5. Data we do not request at all</h3>
-    <p>To be explicit, VerifyFill does <strong>not</strong> request access to:</p>
-    <ul>
-      <li>Google Drive, Calendar, Contacts, Photos, or any other Google service</li>
-      <li>Gmail permissions beyond read-only inbox access</li>
-      <li>Your Google password (sign-in is handled by Google’s own sign-in screen)</li>
-      <li>Permission to send email on your behalf</li>
-      <li>Permission to delete or modify email</li>
-    </ul>
+        <div class="t-card">
+          <h3>5. Data we do not request</h3>
+          <p>Google Drive, Calendar, Contacts, Photos, send-mail access, delete-mail access, or your Google password.</p>
+        </div>
 
-    <h3>6. Third parties</h3>
-    <p>
-      VerifyFill communicates only with <strong>Google’s own services</strong> (Google Sign-In,
-      Gmail API, and Google Account token management through Chrome). We do not send your
-      data to any other company. Google’s handling of data under those services is covered by
-      <a href="https://policies.google.com/privacy">Google’s Privacy Policy</a>.
-    </p>
+        <div class="t-card">
+          <h3>6. Third parties</h3>
+          <p>VerifyFill communicates only with Google services (Sign-In, Gmail API). See <a href="https://policies.google.com/privacy">Google's Privacy Policy</a>.</p>
+        </div>
 
-    <h3>7. Your control</h3>
-    <p>You are never required to use VerifyFill’s autofill prompt — you can always type a code or open a link yourself. You can stop all data access by:</p>
-    <ul>
-      <li>Clicking <strong>Sign out</strong> in the extension popup</li>
-      <li>Revoking VerifyFill in your <a href="https://myaccount.google.com/permissions">Google Account permissions</a></li>
-      <li>Uninstalling the extension from Chrome</li>
-    </ul>
-    <p>Signing out removes locally stored verification history from the extension.</p>
-  </div>
+        <div class="t-card">
+          <h3>7. Your control</h3>
+          <p>Sign out in the extension, revoke access in <a href="https://myaccount.google.com/permissions">Google Account permissions</a>, or uninstall the extension at any time.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  <h2>Contact</h2>
-  <div class="contact">
-    <p><strong>Owner:</strong> Kristijonas</p>
-    <p><strong>Email:</strong> <a href="mailto:kristijonasvr@gmail.com">kristijonasvr@gmail.com</a></p>
-    <p><strong>Website:</strong> <a href="https://verifyfill.krispi.org/">https://verifyfill.krispi.org/</a></p>
-    <p><strong>Privacy policy:</strong> <a href="https://verifyfill.krispi.org/privacy.html">https://verifyfill.krispi.org/privacy.html</a></p>
-  </div>
+  <footer class="footer" id="contact">
+    <p><strong>VerifyFill</strong> — Chrome Extension</p>
+    <p>Owner: Kristijonas · <a href="mailto:kristijonasvr@gmail.com">kristijonasvr@gmail.com</a></p>
+    <p><a href="https://verifyfill.krispi.org/">verifyfill.krispi.org</a> · <a href="https://verifyfill.krispi.org/privacy.html">Privacy Policy</a></p>
+  </footer>
+
+  <script>
+    const reveals = document.querySelectorAll(".reveal");
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) e.target.classList.add("visible");
+        });
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
+    );
+    reveals.forEach((el) => observer.observe(el));
+  </script>
 </body>
 </html>

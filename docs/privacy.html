@@ -33,7 +33,8 @@
       color: #444;
     }
     .meta { color: #666; font-size: 0.95rem; margin-bottom: 1.25rem; }
-    h2 { font-size: 1.15rem; margin: 2rem 0 0.75rem; }
+    h2 { font-size: 1.2rem; margin: 2.25rem 0 0.75rem; }
+    h3 { font-size: 1.05rem; margin: 1.5rem 0 0.5rem; }
     p { margin: 0 0 1rem; }
     ul { margin: 0 0 1rem; padding-left: 1.25rem; }
     li { margin: 0.4rem 0; }
@@ -46,10 +47,8 @@
       border-radius: 8px;
       background: #f4f8fc;
     }
-    .scope-box h2 {
-      margin: 0 0 0.75rem;
-      font-size: 1.1rem;
-    }
+    .scope-box h2, .scope-box h3 { margin-top: 0; }
+    .scope-box h3 { margin-top: 1.25rem; }
     .contact p { margin-bottom: 0.35rem; }
   </style>
 </head>
@@ -71,109 +70,62 @@
     helps you use it on the page where you are trying to log in or create an account.
   </p>
 
-  <div class="scope-box">
-    <h2>Gmail access (gmail.readonly)</h2>
-    <p>
-      VerifyFill requests read-only access to Gmail through the OAuth scope
-      <code>https://www.googleapis.com/auth/gmail.readonly</code>.
-      This permission is used only to search your inbox for verification codes and email
-      confirmation links. VerifyFill cannot send, delete, or modify your email.
-    </p>
-    <p>Specifically, the extension:</p>
-    <ul>
-      <li>Reads up to the 20 most recent inbox messages received in the last 15 minutes</li>
-      <li>Reads each message’s subject line and body text</li>
-      <li>Looks only for verification codes and sign-in or confirmation links</li>
-      <li>Ignores messages that do not appear related to verification</li>
-    </ul>
-  </div>
-
   <h2>How it works</h2>
   <p>After you install VerifyFill and sign in with Google:</p>
   <ul>
     <li>You open a website that asks for a verification code or tells you to check your email.</li>
-    <li>VerifyFill searches your inbox using the Gmail access described above.</li>
+    <li>VerifyFill searches your inbox using the Gmail access described below.</li>
     <li>If a matching code or link is found, it shows a prompt on the page you are using.</li>
     <li>You choose to fill the code into the form or open the confirmation link.</li>
   </ul>
 
-  <h2>Data we access</h2>
-  <p>VerifyFill accesses the following Google user data:</p>
-  <ul>
-    <li>
-      <strong>Google account email address</strong> — via
-      <code>https://www.googleapis.com/auth/userinfo.email</code>
-    </li>
-    <li>
-      <strong>Gmail inbox messages</strong> — via
-      <code>https://www.googleapis.com/auth/gmail.readonly</code>: up to 20 inbox messages
-      from the last 15 minutes; subject and body are read to detect verification codes and
-      confirmation links only
-    </li>
-    <li>
-      <strong>The active browser tab</strong> — only when you focus a verification input or
-      when the extension shows a fill prompt, so it can autofill on the page you are using
-    </li>
-  </ul>
+  <div class="scope-box">
+    <h2>Why VerifyFill requests your data — full transparency</h2>
+    <p>
+      VerifyFill only works if it can (1) know which Google account you connected,
+      (2) read recent Gmail messages that may contain a verification code or link, and
+      (3) interact with the browser tab where you are trying to sign in. This section
+      explains every type of user data the extension requests, the exact purpose of each
+      request, what is read, what is stored, what is not collected, and what you can
+      do to stop access.
+    </p>
 
-  <h2>How we use your data</h2>
-  <p>
-    Your email address is used only to show which Google account is connected in the extension.
-  </p>
-  <p>
-    Gmail message subject lines and bodies are read only to search for verification codes and
-    email confirmation links. That content is processed on your device inside the Chrome
-    extension. VerifyFill does not send your email to a server, does not modify or delete
-    messages, and does not use your data for advertising, profiling, or resale.
-  </p>
-  <p>Data is also used to:</p>
-  <ul>
-    <li>Display a fill prompt near the relevant input on the current tab</li>
-    <li>Autofill a code or open a verification link when you choose to do so</li>
-    <li>Remember which codes, links, and messages you have already used so prompts are not shown again</li>
-  </ul>
+    <h3>1. Google account email address</h3>
+    <p><strong>OAuth scope:</strong> <code>https://www.googleapis.com/auth/userinfo.email</code></p>
+    <p><strong>Why we request it:</strong> You sign in with Google to connect your Gmail account to the extension. We need your Google account email address so the extension can confirm sign-in succeeded and show you which account is currently connected in the extension popup.</p>
+    <p><strong>What we read:</strong> Your Google account email address only.</p>
+    <p><strong>What we do with it:</strong> Display it in the extension popup so you know which Gmail account VerifyFill is using. It is stored locally on your device while you remain signed in.</p>
+    <p><strong>What we do not do with it:</strong> We do not sell it, share it with advertisers, use it for marketing, or send it to a VerifyFill server.</p>
 
-  <h2>Why we need this data</h2>
-  <p>
-    VerifyFill cannot find verification codes or confirmation links without read access to
-    Gmail, because that is where websites send them. The
-    <code>gmail.readonly</code> scope is required to read inbox message subjects and bodies
-    from the last 15 minutes and detect codes or links to offer on the site you are using.
-    Your email address is required so you can sign in with Google and so the extension can
-    show which account is connected. Access to the active tab is required only to show
-    fill prompts and autofill on the page you are using. No other Google data is accessed.
-  </p>
+    <h3>2. Gmail inbox messages (read-only)</h3>
+    <p><strong>OAuth scope:</strong> <code>https://www.googleapis.com/auth/gmail.readonly</code></p>
+    <p><strong>Why we request it:</strong> Websites send verification codes and email confirmation links to Gmail. Without read access to your inbox, VerifyFill cannot detect those codes or links and cannot offer to autofill them. Read-only access means the extension can read mail but cannot send, delete, label, or modify any message.</p>
+    <p><strong>What we read:</strong> Only when you are signed in, VerifyFill queries your Gmail inbox for messages that match all of the following limits:</p>
+    <ul>
+      <li>Messages in your <strong>inbox</strong> only</li>
+      <li>Messages received in the <strong>last 15 minutes</strong></li>
+      <li>Up to the <strong>20 most recent</strong> messages matching that time window</li>
+      <li>For each message: the <strong>subject line</strong>, <strong>body text</strong>, <strong>sender</strong>, and <strong>message ID</strong></li>
+    </ul>
+    <p><strong>How we use what we read:</strong> The extension scans subject and body text only to detect verification codes or email confirmation / sign-in links, then offers to fill them on the website you are using. Message content is processed in your browser on your device.</p>
+    <p><strong>When we read Gmail:</strong> After sign-in; approximately every 1 minute while signed in; when you click Check now; when you focus a verification input or land on a “check your email” page.</p>
+    <p><strong>What we do not do with Gmail data:</strong> We do not upload email to a VerifyFill server, do not read your entire mailbox, do not use Gmail data for advertising or resale, do not send or modify email, and do not access Gmail when you are signed out.</p>
 
-  <h2>What is stored locally</h2>
-  <p>On your device, VerifyFill may store:</p>
-  <ul>
-    <li>Whether you are signed in and your connected Gmail address</li>
-    <li>OAuth tokens managed by Chrome’s identity system</li>
-    <li>Identifiers for emails and verification items you have already used</li>
-    <li>The most recently detected verification item until it is used or dismissed</li>
-  </ul>
-  <p>
-    This information is stored in Chrome’s local extension storage. It is not uploaded to a
-    VerifyFill backend.
-  </p>
+    <h3>3. The website page you are using (browser tab)</h3>
+    <p><strong>Why we need it:</strong> To show a fill prompt near the correct input and autofill a code or open a link on the page where you are signing in. Page interaction happens locally in the extension; we do not track general browsing history or send page content to a server.</p>
 
-  <h2>Third-party services</h2>
-  <p>VerifyFill communicates only with Google services required for sign-in and Gmail access:</p>
-  <ul>
-    <li>Google OAuth / Google Account sign-in</li>
-    <li>Gmail API</li>
-  </ul>
-  <p>
-    Google’s use of data is governed by
-    <a href="https://policies.google.com/privacy">Google’s Privacy Policy</a>.
-  </p>
+    <h3>4. Local storage on your device</h3>
+    <p><strong>What may be stored:</strong> Sign-in state, connected email address, OAuth tokens via Chrome, and IDs of messages/codes/links you already used. Not a copy of your full inbox.</p>
 
-  <h2>Your choices</h2>
-  <p>
-    You can sign out in the extension or revoke access at any time in your
-    <a href="https://myaccount.google.com/permissions">Google Account permissions</a>.
-    Uninstalling the extension removes it from your browser.
-  </p>
+    <h3>5. Data we do not request</h3>
+    <p>VerifyFill does not request Google Drive, Calendar, Contacts, Photos, send-mail access, delete-mail access, or your Google password.</p>
+
+    <h3>6. Third parties</h3>
+    <p>VerifyFill communicates only with Google’s own services (Google Sign-In and Gmail API). Google’s handling of data is covered by <a href="https://policies.google.com/privacy">Google’s Privacy Policy</a>.</p>
+
+    <h3>7. Your control</h3>
+    <p>You can sign out in the extension, revoke access in your <a href="https://myaccount.google.com/permissions">Google Account permissions</a>, or uninstall the extension at any time.</p>
+  </div>
 
   <h2>Children</h2>
   <p>

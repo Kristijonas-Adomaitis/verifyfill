@@ -47,15 +47,8 @@
       align-items: center;
       justify-content: space-between;
       padding: 14px 24px;
-      background: rgba(7, 11, 20, 0.75);
-      backdrop-filter: blur(16px);
+      background: rgba(7, 11, 20, 0.92);
       border-bottom: 1px solid var(--border);
-      animation: nav-in 0.6s ease-out;
-    }
-
-    @keyframes nav-in {
-      from { opacity: 0; transform: translateY(-12px); }
-      to { opacity: 1; transform: translateY(0); }
     }
 
     .nav-brand {
@@ -124,13 +117,6 @@
       align-items: center;
     }
 
-    .hero-copy { animation: fade-up 0.8s ease-out 0.1s both; }
-
-    @keyframes fade-up {
-      from { opacity: 0; transform: translateY(28px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
     .hero-badge {
       display: inline-block;
       padding: 6px 14px;
@@ -154,10 +140,7 @@
     }
 
     .hero h1 span {
-      background: linear-gradient(135deg, #60a5fa, #a78bfa);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: #60a5fa;
     }
 
     .hero-lead {
@@ -212,7 +195,6 @@
     .hero-visual {
       display: flex;
       justify-content: center;
-      animation: fade-up 0.8s ease-out 0.3s both;
     }
 
     .demo-frame {
@@ -292,14 +274,8 @@
     .section-light .section-intro { color: var(--muted-dark); }
 
     .reveal {
-      opacity: 0;
-      transform: translateY(32px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
-    }
-
-    .reveal.visible {
       opacity: 1;
-      transform: translateY(0);
+      transform: none;
     }
 
     .steps {
@@ -443,7 +419,6 @@
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
       }
-      .reveal { opacity: 1; transform: none; }
     }
   </style>
 </head>
@@ -628,17 +603,5 @@
     <p><a href="https://verifyfill.krispi.org/">verifyfill.krispi.org</a> · <a href="https://verifyfill.krispi.org/privacy.html">Privacy Policy</a></p>
   </footer>
 
-  <script>
-    const reveals = document.querySelectorAll(".reveal");
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) e.target.classList.add("visible");
-        });
-      },
-      { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
-    );
-    reveals.forEach((el) => observer.observe(el));
-  </script>
 </body>
 </html>

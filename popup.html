@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VerifyFill</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <div class="wrap">
+    <p class="status-line">
+      <span id="status-dot" class="dot"></span>
+      <span id="status-text">Checking…</span>
+    </p>
+    <p id="status-email" class="detail"></p>
+
+    <div id="last-code" class="recent hidden">
+      <p id="last-code-value" class="recent-value"></p>
+      <p id="last-code-sender" class="detail"></p>
+      <button id="btn-show-on-page" type="button" class="text-btn hidden">Show on this tab</button>
+    </div>
+
+    <div class="main-actions">
+      <button id="btn-sign-in" type="button" class="btn outline hidden">Sign in with Google</button>
+      <button id="btn-check" type="button" class="btn hidden">Check now</button>
+    </div>
+
+    <p id="error" class="err hidden"></p>
+
+    <div class="foot">
+      <button id="btn-sign-out" type="button" class="text-btn hidden">Sign out</button>
+    </div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
